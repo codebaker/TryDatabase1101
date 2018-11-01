@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // 6. 여기에 DB에 저장하는 코드를 넣어줍니다.
     @Override
     public void onClick(View v) {
+
         // 1. 먼저 DB에 넣을 값이 필요하니까 화면에 입력한 값을 가져옵니다.
         //    따로 변수 선언 하지 않고 바로 String으로 가져옵니다.
         String editTextCountry = ((EditText)findViewById(R.id.editTextCountry)).getText().toString();
