@@ -7,11 +7,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private MemberDbHelper dbHelper;
     private SQLiteDatabase mdb;
+
+    TextView textViewId;
+    TextView textViewCount;
+    EditText editTextCountry;
+    EditText editTextCapital;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,10 +26,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 1. activity_main.xml 화면을 그리고 와서...
 
         // 2. 버튼 동작이 있으니까 핸들러를 달아줍니다.
-        ((Button) findViewById(R.id.buttonSave)).setOnClickListener(this);
+        ((Button) findViewById(R.id.buttonInsert)).setOnClickListener(this);
+        ((Button) findViewById(R.id.buttonRead)).setOnClickListener(this);
+        ((Button) findViewById(R.id.buttonUpdate)).setOnClickListener(this);
+        ((Button) findViewById(R.id.buttonDelete)).setOnClickListener(this);
+        ((Button) findViewById(R.id.buttonSearch)).setOnClickListener(this);
+        ((Button) findViewById(R.id.buttonAddVisit)).setOnClickListener(this);
         // 3. this 가 에러날 꺼예요. --> implements View.OnClickListener 를 넣어주세요.
         // 4. 이제 this는 괜찮은데 implements View.OnClickListener 가 에러납니다.
         // 5. 풍선을 클릭하거나 Alt+Enter 해서 implement method를 선택해서 onClick(View v)를 오버라이드 해줍니다.
+
+        textViewId = findViewById(R.id.textViewId);
+        textViewCount = findViewById(R.id.textViewCount);
+        editTextCountry = findViewById(R.id.editTextCountry);
+        editTextCapital = findViewById(R.id.editTextCapital);
 
         // DB 연결해주고 테이블이 없으면 만들어줄 객체를 가져옵니다.
         dbHelper = new MemberDbHelper(this);
@@ -37,22 +53,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         // 1. 먼저 DB에 넣을 값이 필요하니까 화면에 입력한 값을 가져옵니다.
         //    따로 변수 선언 하지 않고 바로 String으로 가져옵니다.
-        String editTextCountry = ((EditText)findViewById(R.id.editTextCountry)).getText().toString();
-        String editTextCapital = ((EditText)findViewById(R.id.editTextCapital)).getText().toString();
 
+        String country = editTextCountry.getText().toString();
+        String capital = editTextCapital.getText().toString();
         switch (v.getId()){
+            case R.id.buttonSearch :
+                searchByCouyntry(country);
+                break;
+            case R.id.buttonAddVisit :
+                addVisitCount(textViewId.getText().toString());
+                break;
             case R.id.buttonInsert:
-                insertRecord(editTextCountry,editTextCapital);
+                insertRecord(country,capital);
                 break;
             case R.id.buttonRead :
-                readData(editTextCountry);
+                readData(country);
                 break;
             case R.id.buttonUpdate:
-                updateRecord(editTextCountry,editTextCapital);
+                updateRecord(country,capital);
                 break;
             case R.id.buttonDelete :
-                deleteRecord(editTextCountry);
+                deleteRecord(capital);
                 break;
+        }
+    }
+
+    private void addVisitCount(String pkid) {
+        String query = "INSERT INTO "+ "awe_country_visitedcount" + " VALUES(" + pkid + ")";
+        mdb.execSQL(query);
+
+    }
+
+    private void searchByCouyntry(String str) {
+        String query = "SELECT pkid, country,capital,count(fkid) visitedTotal " +
+                        "FROM awe_country " +
+                        "INNER JOIN awe_country_visitedcount " +
+                        "ON pkid = fkid " +
+                        "AND pkid = '"+str+"'";
+        Cursor cursor = mdb.rawQuery(query,null);
+        if(cursor.getCount()>0){
+            cursor.moveToFirst();
+            int id = cursor.getInt(cursor.getColumnIndex("pkid"));
+            String visitedTotal = cursor.getString(cursor.getColumnIndex("visitedTotal"));
+            String country = cursor.getString(cursor.getColumnIndex("country"));
+            String capital = cursor.getString(cursor.getColumnIndex("capital"));
+            textViewId.setText(String.valueOf(id));
+            editTextCountry.setText(visitedTotal);
+            editTextCountry.setText(country);
+            editTextCapital.setText(capital);
         }
     }
 
@@ -66,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void readData(String editTextCountry) {
         //쿼리문을 만듭니다.
         //String query = "select * from awe_country"
-        String query = "SELECT * FROM awe_country";
+        String query = "SELECT * FROM awe_country ORDER BY _id DESC";
         Cursor cursor = mdb.rawQuery(query,null);
         StringBuilder resultStr = new StringBuilder();
         while (cursor.moveToNext()) {
@@ -76,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             resultStr.append(id + " : " + country + "-" + capital + "\n");
         }
+        ((TextView)findViewById(R.id.textViewResult)).setText(resultStr);
 
     }
 

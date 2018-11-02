@@ -6,21 +6,49 @@
     android:gravity="top|center"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/textViewId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="PKID"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/textViewCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Visit Count"
+        android:textSize="14sp" />
+
     <EditText
         android:id="@+id/editTextCountry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
         android:ems="10"
-        android:hint="Country" />
+        android:hint="Country"
+        android:textSize="14sp" />
 
     <EditText
         android:id="@+id/editTextCapital"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
         android:ems="10"
-        android:hint="Capital" />
+        android:hint="Capital"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/buttonSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:textAllCaps="true" />
+
+    <Button
+        android:id="@+id/buttonAddVisit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Visited"
+        android:textAllCaps="true" />
 
     <Button
         android:id="@+id/buttonInsert"
@@ -55,6 +83,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="TextView" />
+        android:hint="Select Result" />
 
 </LinearLayout>
