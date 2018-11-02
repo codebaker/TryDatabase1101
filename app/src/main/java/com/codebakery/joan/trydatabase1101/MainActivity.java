@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.buttonDelete :
                 deleteRecord(capital);
                 break;
+            
         }
     }
 
