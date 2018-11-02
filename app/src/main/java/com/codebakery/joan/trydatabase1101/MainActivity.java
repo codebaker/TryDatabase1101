@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private MemberDbHelper dbHelper;
     private SQLiteDatabase mdb;
+    Cursor cursor;
 
     TextView textViewId;
     TextView textViewCount;
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String capital = editTextCapital.getText().toString();
         switch (v.getId()){
             case R.id.buttonSearch :
-                searchByCouyntry(country);
+                searchByPkid(country);
                 break;
             case R.id.buttonAddVisit :
                 addVisitCount(textViewId.getText().toString());
@@ -79,26 +80,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void addVisitCount(String pkid) {
-        String query = "INSERT INTO "+ "awe_country_visitedcount" + " VALUES(" + pkid + ")";
+        String query = "INSERT INTO awe_country_visitedcount VALUES (" + pkid + ")";
         mdb.execSQL(query);
 
     }
 
-    private void searchByCouyntry(String str) {
+    private void searchByPkid(String pkid) {
         String query = "SELECT pkid, country,capital,count(fkid) visitedTotal " +
                         "FROM awe_country " +
-                        "INNER JOIN awe_country_visitedcount " +
+                        "LEFT JOIN awe_country_visitedcount " +
                         "ON pkid = fkid " +
-                        "AND pkid = '"+str+"'";
-        Cursor cursor = mdb.rawQuery(query,null);
+                        //"AND pkid = "+pkid;
+                        "AND country = '" + pkid + "'";
+        cursor = mdb.rawQuery(query,null);
+        int count = cursor.getCount();
         if(cursor.getCount()>0){
             cursor.moveToFirst();
             int id = cursor.getInt(cursor.getColumnIndex("pkid"));
             String visitedTotal = cursor.getString(cursor.getColumnIndex("visitedTotal"));
             String country = cursor.getString(cursor.getColumnIndex("country"));
             String capital = cursor.getString(cursor.getColumnIndex("capital"));
-            textViewId.setText(String.valueOf(id));
-            editTextCountry.setText(visitedTotal);
+            textViewId.setText("pkid : " + id);
+            textViewCount.setText("visitedTotal : "+visitedTotal);
             editTextCountry.setText(country);
             editTextCapital.setText(capital);
         }
@@ -114,11 +117,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void readData(String editTextCountry) {
         //쿼리문을 만듭니다.
         //String query = "select * from awe_country"
-        String query = "SELECT * FROM awe_country ORDER BY _id DESC";
+        String query = "SELECT * FROM awe_country ORDER BY pkid DESC";
         Cursor cursor = mdb.rawQuery(query,null);
         StringBuilder resultStr = new StringBuilder();
         while (cursor.moveToNext()) {
-            int id = cursor.getInt(cursor.getColumnIndex("_id"));
+            int id = cursor.getInt(cursor.getColumnIndex("pkid"));
             String country = cursor.getString(cursor.getColumnIndex("country"));
             String capital = cursor.getString(cursor.getColumnIndex("capital"));
 

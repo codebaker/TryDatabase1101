@@ -69,14 +69,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Update Record"
-        android:textAllCaps="true" />
+        android:textAllCaps="true"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/buttonDelete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Delete Record"
-        android:textAllCaps="true" />
+        android:textAllCaps="true"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/textViewResult"
