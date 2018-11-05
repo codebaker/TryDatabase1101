@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String country = cursor.getString(cursor.getColumnIndex("country"));
             String capital = cursor.getString(cursor.getColumnIndex("capital"));
             textViewId.setText("pkid : " + id);
-            textViewCount.setText("visitedTotal : "+visitedTotal);
+            textViewCount.setText("visitedTotal : "+ visitedTotal);
             editTextCountry.setText(country);
             editTextCapital.setText(capital);
         }else{
