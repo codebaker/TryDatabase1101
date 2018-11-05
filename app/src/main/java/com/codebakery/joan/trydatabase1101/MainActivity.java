@@ -76,12 +76,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.buttonDelete :
                 deleteRecord(capital);
                 break;
-            
+
         }
     }
 
     private void addVisitCount(String pkid) {
-        String query = "INSERT INTO awe_country_visitedcount VALUES (" + pkid + ")";
+        String query = "INSERT INTO awe_country_visitedcount VALUES (" + pkid.replace("pkid : ","") + ")";
         mdb.execSQL(query);
 
     }
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String country = cursor.getString(cursor.getColumnIndex("country"));
             String capital = cursor.getString(cursor.getColumnIndex("capital"));
             textViewId.setText("pkid : " + id);
-            textViewCount.setText("visitedTotal : "+visitedTotal);
+            textViewCount.setText("visitedTotal : "+ visitedTotal);
             editTextCountry.setText(country);
             editTextCapital.setText(capital);
         }
