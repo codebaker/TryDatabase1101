@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String capital = editTextCapital.getText().toString();
         switch (v.getId()){
             case R.id.buttonSearch :
-                searchByPkid(country);
+                searchByCountry(country);
                 break;
             case R.id.buttonAddVisit :
                 addVisitCount(textViewId.getText().toString());
@@ -76,23 +76,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.buttonDelete :
                 deleteRecord(capital);
                 break;
-
+            
         }
     }
 
     private void addVisitCount(String pkid) {
-        String query = "INSERT INTO awe_country_visitedcount VALUES (" + pkid.replace("pkid : ","") + ")";
+        String query = "INSERT INTO awe_country_visitedcount VALUES (" + pkid + ")";
         mdb.execSQL(query);
 
     }
 
-    private void searchByPkid(String pkid) {
-        String query = "SELECT pkid, country,capital,count(fkid) visitedTotal " +
-                        "FROM awe_country " +
-                        "LEFT JOIN awe_country_visitedcount " +
-                        "ON pkid = fkid " +
-                        //"AND pkid = "+pkid;
-                        "AND country = '" + pkid + "'";
+    private void searchByCountry(String pkid) {
+        String query = "SELECT pkid, country, capital, ifnull(vcount,0) visitedTotal " +
+                        "FROM (SELECT * FROM awe_country WHERE country='"+pkid+"') a " +
+                        "LEFT JOIN (SELECT fkid, count(*) vcount FROM awe_country_visitedcount GROUP BY fkid) b " +
+                        "ON pkid = fkid";
         cursor = mdb.rawQuery(query,null);
         int count = cursor.getCount();
         if(cursor.getCount()>0){
@@ -102,9 +100,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String country = cursor.getString(cursor.getColumnIndex("country"));
             String capital = cursor.getString(cursor.getColumnIndex("capital"));
             textViewId.setText("pkid : " + id);
-            textViewCount.setText("visitedTotal : "+ visitedTotal);
+            textViewCount.setText("visitedTotal : "+visitedTotal);
             editTextCountry.setText(country);
             editTextCapital.setText(capital);
+        }else{
+            textViewId.setText("");
+            textViewCount.setText("");
+            editTextCountry.setHint("입력되지 않은 나라");
+            editTextCountry.setText("");
+            editTextCapital.setText("");
         }
     }
 
